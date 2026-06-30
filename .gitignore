@@ -1,0 +1,74 @@
+# ===========================
+# Dependencies
+# ===========================
+node_modules/
+vendor/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+
+# ===========================
+# Environment & Secrets
+# ===========================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ===========================
+# Build & Output
+# ===========================
+dist/
+build/
+out/
+.next/
+.nuxt/
+.vercel/
+coverage/
+htmlcov/
+.pytest_cache/
+
+# ===========================
+# Logs
+# ===========================
+*.log
+logs/
+npm-debug.log*
+
+# ===========================
+# System Files
+# ===========================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ===========================
+# IDE / Editor
+# ===========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# ===========================
+# Runtime / Cache
+# ===========================
+.cache/
+tmp/
+.temp/
+*.tmp
+
+# ===========================
+# Project-specific
+# ===========================
+skills-lock.json
+.agents/
+instance/
+*.db
