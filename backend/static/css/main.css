@@ -1739,11 +1739,32 @@ canvas.chart { width:100%; height:180px; cursor:crosshair; }
     .weather-desc { font-size: 1rem; margin-bottom: 12px; }
     .temp-range { gap: 20px; }
 
-    /* ---- 7. Grids: single column, tighter gaps ---- */
-    .main-grid { gap: 14px; margin-bottom: 14px; }
-    .details-grid { gap: 8px; }
-    .detail-item { padding: 12px; }
-    .extras-grid { gap: 12px; }
+    /* ---- 7. Grids: compact tiles instead of stacked full-size cards ---- */
+    .main-grid { gap: 12px; margin-bottom: 12px; }
+
+    /* Current-conditions tiles: 3 per row instead of 2 tall rows */
+    .details-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .detail-item { padding: 10px 6px; }
+    .d-icon { font-size: 1.2rem; margin-bottom: 4px; }
+    .d-label { font-size: 0.65rem; }
+    .d-val { font-size: 1rem; }
+
+    /* AQI / UV / Comfort cards: side-by-side compact tiles, not 3 full screens */
+    .extras-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+    .extra-card { padding: 12px 8px; }
+    .extra-card .card-title { font-size: 0.68rem; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; justify-content: center; }
+    .extra-card .card-title .info-btn { font-size: 0.7rem; padding: 2px; }
+    .extra-val { font-size: 1.6rem; margin: 4px 0; }
+    .extra-status { font-size: 0.72rem; }
+    .extra-detail { font-size: 0.65rem; margin-top: 4px; line-height: 1.4; }
+
+    /* Sidebar widgets (wind compass / sunrise arc / moon phase): shrink so
+       each one isn't a full scroll-length "big card" on its own */
+    .compass-svg { width: 100px; height: 100px; }
+    .compass-wrap { gap: 8px; }
+    .sun-arc-svg { max-width: 240px; height: 100px; }
+    .moon-disc { width: 60px; height: 60px; }
+
     .ai-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
     .best-day-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .forecast-grid { gap: 8px; }
@@ -1762,5 +1783,87 @@ canvas.chart { width:100%; height:180px; cursor:crosshair; }
     .temp-main { font-size: 2.9rem; }
     .city-name { font-size: 1.4rem; }
     .ai-grid, .best-day-grid { grid-template-columns: 1fr; }
+    /* Keep these as 2-col tiles rather than dropping to 1 full-width card */
+    .details-grid { grid-template-columns: repeat(2, 1fr); }
+    .extras-grid { grid-template-columns: repeat(2, 1fr); }
+    .extra-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
     .header-controls .pill-btn, .back-home-btn { padding: 8px 9px; }
+}
+
+/* =========================================================================
+   MOBILE TAB NAVIGATION
+   Replaces the single long scroll with 4 tabs (Aujourd'hui / 5 jours /
+   Air+Soleil / IA) at mobile widths, Apple-Weather-style. Desktop is
+   completely unaffected: .mobile-tabbar stays display:none and no section
+   ever gets .mtab-hidden outside the max-width:640px query, since
+   mobile-tabs.js only toggles that class when the media query matches.
+   ========================================================================= */
+
+/* Hourly horizontal strip (new "Aujourd'hui" tab signature element) */
+.hourly-strip-card { display: none; } /* desktop: redundant with the existing hourly chart */
+.hourly-strip-scroll {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 4px 2px 6px;
+    scrollbar-width: none;
+}
+.hourly-strip-scroll::-webkit-scrollbar { display: none; }
+.hour-item {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 38px;
+}
+.hour-item .h-time { font-size: 0.72rem; color: var(--text-muted); }
+.hour-item .h-icon { width: 28px; height: 28px; }
+.hour-item .h-icon .weather-icon-meteocon { width: 28px; height: 28px; filter: none; }
+.hour-item .h-temp { font-size: 0.9rem; font-weight: 700; }
+.hour-item.now .h-time { color: var(--primary); font-weight: 700; }
+
+/* Bottom tab bar: hidden entirely on desktop */
+.mobile-tabbar { display: none; }
+
+@media (max-width: 640px) {
+    .hourly-strip-card { display: block; }
+
+    /* Sections hidden by mobile-tabs.js when their tab isn't active */
+    .mtab-hidden { display: none !important; }
+
+    /* The old scroll-to-section pill bar becomes redundant once tabs exist */
+    .quick-nav { display: none; }
+
+    .mobile-tabbar {
+        display: flex;
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        background: rgba(20,24,38,0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid var(--glass-border);
+        padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+        z-index: 900;
+    }
+    .mobile-tabbar .tab-btn {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-family: 'Inter', sans-serif;
+        padding: 4px 2px;
+        font-size: 0.66rem;
+    }
+    .mobile-tabbar .tab-icon { font-size: 1.2rem; line-height: 1; }
+    .mobile-tabbar .tab-icon i.ti { font-size: 1.2rem; }
+    .mobile-tabbar .tab-btn.active { color: var(--primary); }
+    .mobile-tabbar .tab-btn:active { transform: scale(0.94); }
+
+    /* Room at the bottom of the page so content isn't hidden behind the bar */
+    .wrap { padding-bottom: calc(74px + env(safe-area-inset-bottom)); }
 }
