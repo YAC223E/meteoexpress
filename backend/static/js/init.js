@@ -12,6 +12,7 @@ import { initPWA } from './pwa.js';
 import { loadLandingWeather } from './landing.js';
 import './chatbot.js';
 import './quick-nav.js';
+import './mobile-tabs.js';
 import { startLocalClock } from './local-clock.js';
 
 function initAll() {
