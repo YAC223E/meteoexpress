@@ -34,9 +34,9 @@
         </a>
         <div class="header-controls">
             {% if meteo and not meteo.erreur %}
-            <a href="/" class="back-home-btn" data-i18n="back_home">{{ ui_icon('home') }} Accueil</a>
-            <a href="/compare?city1={{ meteo.ville }}&unit={{ unite|default('C') }}&lang={{ lang|default('fr') }}" class="pill-btn" data-i18n="compare">{{ ui_icon('compare') }} Comparer</a>
-            <a href="/export-pdf?city={{ meteo.ville }}&unit={{ unite|default('C') }}&lang={{ lang|default('fr') }}" target="_blank" class="pill-btn" data-i18n="export">{{ ui_icon('export') }} Export</a>
+            <a href="/" class="back-home-btn" data-i18n="back_home">{{ ui_icon('home') }} <span class="pill-label">Accueil</span></a>
+            <a href="/compare?city1={{ meteo.ville }}&unit={{ unite|default('C') }}&lang={{ lang|default('fr') }}" class="pill-btn" data-i18n="compare">{{ ui_icon('compare') }} <span class="pill-label">Comparer</span></a>
+            <a href="/export-pdf?city={{ meteo.ville }}&unit={{ unite|default('C') }}&lang={{ lang|default('fr') }}" target="_blank" class="pill-btn" data-i18n="export">{{ ui_icon('export') }} <span class="pill-label">Export</span></a>
             {% endif %}
             <button id="settingsBtn" class="pill-btn" aria-label="Paramètres" aria-expanded="false" onclick="toggleSettings()">{{ ui_icon('settings') }}</button>
             <div id="settingsPanel" class="settings-panel" hidden>
