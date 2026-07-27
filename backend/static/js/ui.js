@@ -217,9 +217,11 @@ export function toggleSettings() {
   if (isOpen) {
     panel.setAttribute('hidden', '');
     btn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('settings-open');
   } else {
     panel.removeAttribute('hidden');
     btn.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('settings-open');
   }
 }
 window.toggleSettings = toggleSettings;
@@ -233,6 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!panel.hasAttribute('hidden') && !panel.contains(e.target)) {
       panel.setAttribute('hidden', '');
       btn.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('settings-open');
     }
   });
 });
