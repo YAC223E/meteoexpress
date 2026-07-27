@@ -177,6 +177,13 @@
                 <div class="detail-item"><div class="d-icon">{{ ui_icon('compass') }}</div><div class="d-label" data-i18n="direction">Direction</div><div class="d-val" id="windDirText">—</div></div>
             </div>
         </div>
+
+        <!-- Mobile-only: horizontal hourly strip (Apple Weather style). Hidden
+             on desktop via CSS; populated from window.HOURLY by mobile-tabs.js -->
+        <div class="card hourly-strip-card" id="hourlyStripCard">
+            <div class="card-title">{{ ui_icon('clock') }} <span data-i18n="hourly_title">Prévisions horaires</span></div>
+            <div class="hourly-strip-scroll" id="hourlyStripScroll"></div>
+        </div>
     </div>
 
     <!-- WIND COMPASS + SUNRISE ARC -->
@@ -401,6 +408,15 @@
         <a href="/" class="back-home-btn" style="display:inline-flex;" data-i18n="back_home_sidebar">{{ ui_icon('home') }} Retour à l'accueil</a>
     </div>
 
+    <!-- Mobile-only bottom tab bar. Desktop keeps the .quick-nav scroll pills;
+         this is hidden by default and only shown under the mobile media query. -->
+    <nav class="mobile-tabbar" id="mobileTabbar" aria-label="Navigation mobile">
+        <button class="tab-btn active" data-tab="mtab-today"><span class="tab-icon">{{ ui_icon('home') }}</span><span data-i18n="mtab_today">Aujourd'hui</span></button>
+        <button class="tab-btn" data-tab="mtab-forecast"><span class="tab-icon">{{ ui_icon('calendar') }}</span><span data-i18n="mtab_forecast">5 jours</span></button>
+        <button class="tab-btn" data-tab="mtab-air"><span class="tab-icon">{{ ui_icon('wind-meter') }}</span><span data-i18n="mtab_air">Air/Soleil</span></button>
+        <button class="tab-btn" data-tab="mtab-ai"><span class="tab-icon">{{ ui_icon('bulb') }}</span><span data-i18n="mtab_ai">IA</span></button>
+    </nav>
+
     {% else %}
     <!-- BEAUTIFUL STRUCTURAL LANDING EXPERIENCE -->
     <div class="landing-hero" style="padding: 20px 20px 10px; margin-bottom: 15px;">
@@ -577,6 +593,7 @@
 <!-- Data injection (MUST be before app.js) -->
 <script>
 window.HOURLY = {{ hourly|default([])|tojson }};
+window.CURRENT_ICON_SVG = {% if meteo and not meteo.erreur %}{{ (weather_icon(meteo.condition, sunrise=meteo.lever_soleil, sunset=meteo.coucher_soleil)|string)|tojson }}{% else %}""{% endif %};
 window.WIND_DEG = {{ meteo.vent_deg|default(0) if meteo and not meteo.erreur else 270 }};
 window.LAT = {{ meteo.lat|default(0) if meteo and not meteo.erreur else 0 }};
 window.LON = {{ meteo.lon|default(0) if meteo and not meteo.erreur else 0 }};
