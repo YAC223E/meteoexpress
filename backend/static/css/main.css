@@ -1605,3 +1605,162 @@ canvas.chart { width:100%; height:180px; cursor:crosshair; }
     .wb-msg { animation: none; }
     .wb-typing-dots span { animation: none; opacity: 0.5; }
 }
+
+/* =========================================================================
+   MOBILE-FIRST OVERHAUL
+   Everything below is scoped to small viewports. Goal: this should feel like
+   a native app screen, not a shrunk desktop layout. Kept as one block so it's
+   easy to find/tune later instead of scattered across the file.
+   ========================================================================= */
+
+/* ---- 0. Kill hover-as-feedback on touch devices ----
+   Every interactive element above uses :hover for its "pressed" feedback,
+   which on touch either never fires or sticks after a tap. Touch devices
+   should only react to :active (already defined per-component above). */
+@media (hover: none) and (pointer: coarse) {
+    .pill-btn:hover, .search-btn:hover, .back-home-btn:hover,
+    .fav-btn:hover, .city-chip:hover, .map-layer-btn:hover,
+    .chart-tab:hover, .forecast-card:hover, .ai-item:hover,
+    .best-day-card:hover, .fav-city:hover, .detail-item:hover,
+    .glass-card:hover, .card:hover, .hero-card:hover,
+    .autocomplete-item:hover {
+        transform: none;
+        box-shadow: inherit;
+        background: inherit;
+        border-color: inherit;
+    }
+}
+
+@media (max-width: 640px) {
+
+    /* ---- 1. Base spacing & tap targets ---- */
+    .wrap { padding: 12px 14px 90px; }
+    button, a.pill-btn, a.back-home-btn, .search-btn, .fav-btn {
+        min-height: 44px; /* Apple/Google minimum comfortable tap target */
+    }
+    .card, .glass-card { padding: 16px; border-radius: 16px; }
+    .card-title { margin-bottom: 12px; }
+
+    /* ---- 2. Header: logo + icon-only actions in one compact row ---- */
+    .header { margin-bottom: 16px; gap: 8px; }
+    .logo { font-size: 1.15rem; gap: 6px; }
+    .logo-icon { font-size: 1.4rem; }
+    .logo-icon .weather-icon-meteocon { width: 24px; height: 24px; }
+
+    .header-controls { gap: 6px; }
+    /* Compare/Export/Back become icon-only pills to stop the row wrapping
+       into a second and third line. Text visually hidden (not removed) so
+       screen readers still get the label. */
+    .back-home-btn .pill-label,
+    .header-controls .pill-btn .pill-label {
+        position: absolute;
+        width: 1px; height: 1px;
+        padding: 0; margin: -1px;
+        overflow: hidden;
+        clip: rect(0,0,0,0);
+        white-space: nowrap;
+        border: 0;
+    }
+    .back-home-btn, .header-controls .pill-btn {
+        padding: 9px 12px;
+        font-size: 0.82rem;
+    }
+    /* Auth links get out of the way into the drawer on small screens */
+    .header-controls > a[href="/login"],
+    .header-controls > a[href="/signup"],
+    .header-controls > a[href="/profile"],
+    .header-controls > a[href="/logout"] {
+        padding: 9px 10px;
+        font-size: 0.78rem;
+    }
+
+    /* ---- 3. Settings panel -> bottom sheet ---- */
+    .settings-panel {
+        position: fixed;
+        top: auto;
+        left: 0; right: 0; bottom: 0;
+        width: 100%;
+        min-width: 0;
+        max-height: 75vh;
+        overflow-y: auto;
+        border-radius: 20px 20px 0 0;
+        border: 1px solid var(--card-border);
+        border-bottom: none;
+        padding: 10px 16px calc(16px + env(safe-area-inset-bottom));
+        box-shadow: 0 -8px 32px rgba(0,0,0,0.35);
+        z-index: 1200;
+        /* simple slide-up, no JS changes needed since [hidden] still controls display */
+        animation: sheetUp 0.25s cubic-bezier(0.4,0,0.2,1);
+    }
+    .settings-panel::before {
+        content: '';
+        display: block;
+        width: 36px; height: 4px;
+        background: var(--card-border);
+        border-radius: 4px;
+        margin: 2px auto 12px;
+    }
+    @keyframes sheetUp {
+        from { transform: translateY(100%); opacity: 0.4; }
+        to   { transform: translateY(0); opacity: 1; }
+    }
+    .settings-panel-btn, .unit-toggle, .lang-switch { width: 100%; }
+    /* Dim the page behind the open sheet (class set in ui.js toggleSettings) */
+    body.settings-open::after,
+    body:has(#settingsPanel:not([hidden]))::after {
+        content: '';
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 1150;
+    }
+
+    /* ---- 4. Search ---- */
+    .search-wrap { gap: 8px; }
+    .search-input { padding: 12px 44px 12px 40px; font-size: 0.95rem; }
+    .search-btn { padding: 12px 18px; font-size: 0.9rem; }
+
+    /* ---- 5. Quick nav pills: full-bleed scroller, no stray padding ---- */
+    .quick-nav {
+        width: auto;
+        margin: 0 -14px 16px;
+        padding: 8px 14px;
+        border-radius: 0;
+        top: 0;
+    }
+    .quick-nav-pill { flex-shrink: 0; padding: 7px 14px; font-size: 0.82rem; }
+
+    /* ---- 6. Hero card: rescale the giant desktop type ---- */
+    .hero-card { padding: 20px 16px; }
+    .city-name { font-size: 1.6rem; }
+    .temp-main { font-size: 3.4rem; }
+    .weather-emoji { font-size: 4.2rem; }
+    .hero-weather-visual { height: 90px; }
+    .hero-glow-ring { width: 160px; height: 160px; }
+    .weather-desc { font-size: 1rem; margin-bottom: 12px; }
+    .temp-range { gap: 20px; }
+
+    /* ---- 7. Grids: single column, tighter gaps ---- */
+    .main-grid { gap: 14px; margin-bottom: 14px; }
+    .details-grid { gap: 8px; }
+    .detail-item { padding: 12px; }
+    .extras-grid { gap: 12px; }
+    .ai-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .best-day-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .forecast-grid { gap: 8px; }
+    .forecast-card { padding: 12px 6px; }
+
+    /* ---- 8. Map & charts sized for small screens ---- */
+    #weather-map { height: 200px; }
+    canvas.chart { height: 150px; }
+
+    /* ---- 9. Autocomplete dropdown shouldn't run off the edges ---- */
+    .autocomplete-list { max-height: 50vh; }
+}
+
+/* Tiny phones (SE-class, ~375px and under) */
+@media (max-width: 380px) {
+    .temp-main { font-size: 2.9rem; }
+    .city-name { font-size: 1.4rem; }
+    .ai-grid, .best-day-grid { grid-template-columns: 1fr; }
+    .header-controls .pill-btn, .back-home-btn { padding: 8px 9px; }
+}
