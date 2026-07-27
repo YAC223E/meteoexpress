@@ -254,7 +254,12 @@ export function applyLanguage(lang) {
     if (el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
       el.placeholder = t[key];
     } else {
-      el.innerHTML = (el._mxIconPrefix ? el._mxIconPrefix + ' ' : '') + t[key];
+      // If the original markup wrapped the label in .pill-label (used to hide
+      // text on mobile while keeping the icon), keep wrapping it that way.
+      const hadLabelSpan = el.querySelector('.pill-label') !== null || el._mxHasLabelSpan;
+      el._mxHasLabelSpan = hadLabelSpan;
+      const label = hadLabelSpan ? `<span class="pill-label">${t[key]}</span>` : t[key];
+      el.innerHTML = (el._mxIconPrefix ? el._mxIconPrefix + ' ' : '') + label;
     }
   });
   document.querySelectorAll('[data-i18n-ph]').forEach(el => {
