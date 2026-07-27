@@ -29,5 +29,5 @@ TILE_CACHE_TTL = 1800  # 30 minutes
 AUTH_SECRET_KEY = os.environ.get("AUTH_SECRET_KEY", "change-me-in-production-meteoexpress-secret-key-2024")
 
 # ==================== AI MODEL SETTINGS ====================
-GROQ_PRIMARY_MODEL = "llama-3.3-70b-versatile"
-GROQ_FALLBACK_MODEL = "llama-3.1-8b-instant"
+GROQ_PRIMARY_MODEL = "openai/gpt-oss-120b"
+GROQ_FALLBACK_MODEL = "openai/gpt-oss-20b"
